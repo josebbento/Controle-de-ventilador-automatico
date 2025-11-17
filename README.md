@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Controle-de-ventilador-automatico
-=======
 # Controle de ventilador automático (3 velocidades) - FSM que ajusta velocidade conforme nível de temperatura simulado.
 
 ## Objetivo
@@ -23,4 +20,3 @@ M = ({Temp. < 20°C, 20 <= Temp. < 25°C, 25 <= Temp. < 30°C, Temp. >= 30°C}, 
 | v1 | v0 | v1 | v2 | v3 |
 | v2 | v0 | v1 | v2 | v3 |
 | v3 | v0 | v1 | v2 | v3 |
->>>>>>> 01eb5db (Objetivo e FSM prontos)
