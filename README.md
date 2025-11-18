@@ -1,22 +1,159 @@
-# Controle de ventilador automático (3 velocidades) - FSM que ajusta velocidade conforme nível de temperatura simulado.
+# **Controle de Ventilador Automático — FSM em VHDL**
+### **Alunos:** *Luiz Miguel Toller Marconatto* e *José Barros Bento de Freitas*
+### **Disciplina:** Sistemas Digitais — UFN  
+### **Ferramenta:** Vivado 2015.1  
 
-## Objetivo
+---
 
-O objetivo deste projeto é desenvolver um controle automático para um ventilador com três velocidades (desligado, baixa, média e alta), utilizando uma máquina de estados finitos (FSM). O ventilador será controlado com base na temperatura ambiente, com a seguinte lógica:
-* Abaixo de 20°C: o ventilador fica desligado.
-* Entre 20°C e 24°C: o ventilador funciona na baixa velocidade.
-* Entre 25°C e 29°C: o ventilador opera na velocidade média.
-* A partir de 30°C: o ventilador é ajustado para a alta velocidade.
+## 🧭 **Objetivo do Projeto**
 
-Esse controle visa proporcionar um ambiente mais confortável, ajustando automaticamente a intensidade do ventilador de acordo com a variação da temperatura.
+Desenvolver um mini controlador digital que ajusta automaticamente a velocidade de um ventilador conforme um valor de temperatura simulado.  
+O sistema foi implementado em **VHDL**, utilizando conceitos de:
 
-## Máquina de Estados Finita (FSM)
+- Portas lógicas e circuitos combinacionais  
+- Flip-flops e registradores  
+- Máquinas de estados finitos (FSM – Moore)  
+- Simulações e síntese lógica no Vivado  
 
-M = ({Temp. < 20°C, 20 <= Temp. < 25°C, 25 <= Temp. < 30°C, Temp. >= 30°C}, {v0,v1,v2,v3}, δ, v0, {})
+---
 
-| Estado \ prox. | Temp. < 20°C | 20 <= Temp. < 25°C | 25 <= Temp. < 30°C | 30 <= Temp. |
-|:--------------:|:------------:|:------------------:|:------------------:|:-----------:|
-| v0 | v0 | v1 | v2 | v3 |
-| v1 | v0 | v1 | v2 | v3 |
-| v2 | v0 | v1 | v2 | v3 |
-| v3 | v0 | v1 | v2 | v3 |
+## 🌀 **Descrição do Funcionamento**
+
+O sistema recebe um valor de **temperatura em 2 bits** e define automaticamente a velocidade do ventilador:
+
+| Temperatura (2 bits) | Interpretação          | Velocidade |
+|----------------------|------------------------|------------|
+| `00`                 | Temperatura baixa      | `00` (Desligado) |
+| `01`                 | Temperatura média baixa| `01` (Velocidade 1) |
+| `10`                 | Temperatura média alta | `10` (Velocidade 2) |
+| `11`                 | Temperatura alta       | `11` (Velocidade 3) |
+
+A saída é representada por **2 bits**, onde cada valor representa uma velocidade.  
+A FSM projetada é do tipo **Moore** (saída depende somente do estado atual).
+
+
+---
+
+## 🧩 **Diagrama de Estados (FSM)**
+
+        +-------------------+
+        |       S0          |
+        |   (Desligado)     |
+        |   vel = "00"      |
+        +---------+---------+
+                  |
+      temperatura = "01"
+                  v
+        +-------------------+
+        |       S1          |
+        |  Velocidade 1     |
+        |   vel = "01"      |
+        +---------+---------+
+                  |
+      temperatura = "10"
+                  v
+        +-------------------+
+        |       S2          |
+        |  Velocidade 2     |
+        |   vel = "10"      |
+        +---------+---------+
+                  |
+      temperatura = "11"
+                  v
+        +-------------------+
+        |       S3          |
+        |  Velocidade 3     |
+        |   vel = "11"      |
+        +---------+---------+
+
+---
+
+## ⚙️ **Arquivos do Projeto**
+
+O repositório contém:
+
+- Pasta completa do **Vivado 2015.1**  
+- Código fonte em VHDL:  
+  - `fsm_ventilador.vhd`  
+  - `top_level.vhd`  
+  - `testbench_tb.vhd`  
+- Prints das simulações (formas de onda)  
+- Print dos blocos lógicos sintetizados  
+- Este README.md
+
+---
+
+## 📜 **Descrição do Código**
+
+### **FSM (fsm_ventilador.vhd)**  
+Contém:
+- Registrador de estado  
+- Lógica de transição baseada no valor da temperatura  
+- Saída dependente apenas do estado atual  
+
+### **Top Level (top_level.vhd)**  
+Integra sinais de entrada (temperatura), clock e reset.
+
+### **Testbench (testbench_tb.vhd)**  
+Gera:
+- Clock automático  
+- Sequência de valores de temperatura  
+- Sinal de reset  
+- Observação das saídas e estados  
+
+---
+
+## 🧪 **Simulações**
+
+### Temperaturas aplicadas no testbench:
+
+| Tempo (ns) | Temperatura |
+|------------|-------------|
+| 0–20       | `00` |
+| 20–40      | `01` |
+| 40–60      | `10` |
+| 60–80      | `11` |
+| 80–100     | `00` |
+
+### Prints necessários:
+
+- Formas de onda mostrando:  
+  - Clock  
+  - Reset  
+  - Temperatura  
+  - Estado atual  
+  - Saída velocidade  
+- Schematic após **Open Elaborated Design**
+
+> *(Inserir prints abaixo)*
+
+---
+
+## 📌 **Conclusão**
+
+O projeto permitiu consolidar a compreensão sobre:
+
+- Funcionamento e implementação de uma FSM do tipo Moore  
+- Relação entre entradas → estados → saídas  
+- Diferença entre lógica sequencial (registradores) e combinacional (transições)  
+- Desenvolvimento completo de sistemas digitais no Vivado  
+- Testes e validações em simulação
+
+### **Dificuldades enfrentadas**
+- Ajustar a ordem das transições na FSM  
+- Configuração do testbench  
+- Interpretação de formas de onda no Vivado  
+
+### **Aprendizados**
+- VHDL na prática  
+- Construção de máquinas de estado  
+- Uso correto do Vivado  
+- Entendimento da síntese e implementação de hardware digital  
+
+---
+
+## 🔗 **Repositório GitHub**
+
+**Link:** _(adicione aqui após publicar)_
+
+---
