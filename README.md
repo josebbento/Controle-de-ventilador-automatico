@@ -84,17 +84,121 @@ O repositório contém:
 ## 📜 **Descrição do Código**
 
 ### **FSM (fsm_ventilador.vhd)**  
-Contém:
-- Registrador de estado  
-- Lógica de transição baseada no valor da temperatura  
-- Saída dependente apenas do estado atual  
+
+```
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity fsm_ventilador is
+    Port (
+        clk        : in  STD_LOGIC;
+        reset      : in  STD_LOGIC;
+        temperatura: in  STD_LOGIC_VECTOR(1 downto 0);
+        velocidade : out STD_LOGIC_VECTOR(1 downto 0)
+    );
+end fsm_ventilador;
+
+architecture Behavioral of fsm_ventilador is
+
+    type state_type is (S0, S1, S2, S3);
+    signal current_state, next_state : state_type;
+
+begin
+
+    -- Processo do registrador de estado (FSM sequencial)
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            current_state <= S0;
+        elsif rising_edge(clk) then
+            current_state <= next_state;
+        end if;
+    end process;
+
+    -- Processo combinacional (transições de estado)
+    process(temperatura)
+    begin
+        case temperatura is
+            when "00" => next_state <= S0;
+            when "01" => next_state <= S1;
+            when "10" => next_state <= S2;
+            when "11" => next_state <= S3;
+            when others => next_state <= S0;
+        end case;
+    end process;
+
+    -- Processo da saída (FSM tipo Moore)
+    process(current_state)
+    begin
+        case current_state is
+            when S0 => velocidade <= "00";
+            when S1 => velocidade <= "01";
+            when S2 => velocidade <= "10";
+            when S3 => velocidade <= "11";
+        end case;
+    end process;
+
+end Behavioral;
+```
+
+---
 
 ### **Testbench (testbench_tb.vhd)**  
-Gera:
-- Clock automático  
-- Sequência de valores de temperatura  
-- Sinal de reset  
-- Observação das saídas e estados  
+
+```
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity testbench_tb is
+end testbench_tb;
+
+architecture Behavioral of testbench_tb is
+
+    signal clk_tb         : STD_LOGIC := '0';
+    signal reset_tb       : STD_LOGIC := '1';
+    signal temperatura_tb : STD_LOGIC_VECTOR(1 downto 0) := "00";
+    signal velocidade_tb  : STD_LOGIC_VECTOR(1 downto 0);
+
+    constant clk_period : time := 10 ns;
+
+begin
+
+    -- Instanciação da FSM diretamente (sem top level)
+    DUT: entity work.fsm_ventilador
+        port map(
+            clk         => clk_tb,
+            reset       => reset_tb,
+            temperatura => temperatura_tb,
+            velocidade  => velocidade_tb
+        );
+
+    -- Clock
+    clk_process : process
+    begin
+        clk_tb <= '0';
+        wait for clk_period/2;
+        clk_tb <= '1';
+        wait for clk_period/2;
+    end process;
+
+    -- Estímulos
+    stim_proc: process
+    begin
+        -- Reset
+        wait for 20 ns;
+        reset_tb <= '0';
+
+        temperatura_tb <= "00"; wait for 20 ns;
+        temperatura_tb <= "01"; wait for 20 ns;
+        temperatura_tb <= "10"; wait for 20 ns;
+        temperatura_tb <= "11"; wait for 20 ns;
+        temperatura_tb <= "00"; wait for 20 ns;
+
+        wait;
+    end process;
+
+end Behavioral;
+```
 
 ---
 
