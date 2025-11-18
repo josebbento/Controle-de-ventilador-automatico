@@ -75,10 +75,8 @@ O repositório contém:
 - Pasta completa do **Vivado 2015.1**  
 - Código fonte em VHDL:  
   - `fsm_ventilador.vhd`  
-  - `top_level.vhd`  
   - `testbench_tb.vhd`  
-- Prints das simulações (formas de onda)  
-- Print dos blocos lógicos sintetizados  
+- Prints das simulações  
 - Este README.md
 
 ---
@@ -90,9 +88,6 @@ Contém:
 - Registrador de estado  
 - Lógica de transição baseada no valor da temperatura  
 - Saída dependente apenas do estado atual  
-
-### **Top Level (top_level.vhd)**  
-Integra sinais de entrada (temperatura), clock e reset.
 
 ### **Testbench (testbench_tb.vhd)**  
 Gera:
@@ -115,17 +110,15 @@ Gera:
 | 60–80      | `11` |
 | 80–100     | `00` |
 
-### Prints necessários:
+### Print
 
 - Formas de onda mostrando:  
   - Clock  
   - Reset  
-  - Temperatura  
-  - Estado atual  
-  - Saída velocidade  
-- Schematic após **Open Elaborated Design**
+  - Temperatura
+  - Velocidade
 
-> *(Inserir prints abaixo)*
+> ![Simulação](https://github.com/josebbento/Controle-de-ventilador-automatico/blob/main/ventilador.png)
 
 ---
 
@@ -154,6 +147,6 @@ O projeto permitiu consolidar a compreensão sobre:
 
 ## 🔗 **Repositório GitHub**
 
-**Link:** _(adicione aqui após publicar)_
+**Link:** https://github.com/josebbento/Controle-de-ventilador-automatico.git
 
 ---
